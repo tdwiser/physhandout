@@ -231,4 +231,22 @@
 \renewcommand{\footrulewidth}{0.4pt}
 \setlength{\headsep}{12pt}
 
+%%% new multi-lecture code
+
+\excludecomment{lecture}
+\newcounter{lecture}
+
+\newif\if@restrictlec
+\@restrictlecfalse
+\newcommand{\onlylecture}[1]{\@restrictlectrue\edef\@leclist{#1}}
+\AtBeginDocument{\renewcommand{\onlylecture}[1]{\PackageError{physhandout}{\protect\onlylecture\space outside of preamble}{Move your \protect\onlylecture\space statement before \protect\begin{document}}}}
+\newif\if@skiplec
+\@skiplecfalse
+\let\@lecturecomment\lecture
+\let\@endlecture\endlecture
+\let\@@lecture\@lecturecomment
+\newcommand{\@lecture}[1]{\if@restrictlec \@skiplectrue \edef\resv@b{#1}\@for \resv@a:=\@leclist \do {\ifx \resv@a \resv@b \@skiplecfalse \fi} \fi \if@skiplec \relax \else \@skiplectrue \let\@@lecture\relax \fi \@@lecture }
+\renewenvironment{lecture}[2][noname]{\stepcounter{lecture}\@lecture{#1}\clearpage\handoutid{Lecture \arabic{lecture}}\title{#2}\lectureheader{\arabic{lecture}}{#2}}{\let\@@lecture\@lecturecomment}
+\newcommand{\lectureheader}[2]{\noindent{\LARGE \color{blue} Lecture #1: #2}}
+
 \endinput
