@@ -1,6 +1,9 @@
 aux
 pdfs
 
+# Auxiliary 'table-of-handouts' file
+*.toh
+
 ## Local OS files
 .DS_Store
 
