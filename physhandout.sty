@@ -153,7 +153,7 @@
 
 \newcommand*{\annot}[1]{\tag*{\footnotesize{\textcolor{black!70}{#1}}}}
 
-\newcommand*{\activity}[1]{{\Large\color{blue}\sc {#1}}}
+% \newcommand*{\activity}[1]{{\Large\color{blue}\sc {#1}}}
 
 % \newcommand*{\miniactivity}[1]{{\color{blue}\sc {#1}}}
 
@@ -214,11 +214,11 @@
   \vskip 1.5em}
 
 \let\@handoutid\relax
-\newcommand{\handoutid}[1]{\def\@handoutid{#1}}
+\newcommand{\handoutid}[1]{\gdef\@handoutid{#1}}
 \let\@copyrightinfo\relax
-\newcommand{\copyrightinfo}[1]{\def\@copyrightinfo{#1}}
+\newcommand{\copyrightinfo}[1]{\gdef\@copyrightinfo{#1}}
 \let\@courseinfo\relax
-\newcommand{\courseinfo}[1]{\def\@courseinfo{#1}}
+\newcommand{\courseinfo}[1]{\gdef\@courseinfo{#1}}
 
 \let\maketitle\relax
 \pagestyle{fancy}
@@ -230,5 +230,55 @@
 \rfoot{\scriptsize\textsc{\@copyrightinfo}}
 \renewcommand{\footrulewidth}{0.4pt}
 \setlength{\headsep}{12pt}
+
+% Begin code to handle multiple handouts of multiple types
+
+%%%%% Create a new handout environment
+\newcommand{\inithandout}[2]{% #1 is the environment name (e.g. lecture) and #2 is the `pretty' form (e.g. Lecture)
+\excludecomment{#1}% Initialize handout environment, default is exclude (we will override this)
+\newcounter{#1}%
+%
+\expandafter\newif\csname if@restrict#1\endcsname% flag for restricting output to only some handouts
+\csname @restrict#1false\endcsname% by default include all handouts
+\expandafter\newcommand\csname only#1\endcsname[1]{\csname @restrict#1true\endcsname\expandafter\edef\csname @#1list\endcsname{##1}}% \onlyhandout{h1,h2,...} to set the list of included handouts
+\expandafter\newif\csname if@skip#1\endcsname% bool to store whether or not to skip this handout
+\csname @skip#1false\endcsname%
+\expandafter\let\expandafter\@tmp\csname #1\endcsname% black magic to store the original comment environment def in @handoutcomment...
+\expandafter\let\csname @#1comment\endcsname\@tmp%
+\expandafter\let\expandafter\@tmp\csname end#1\endcsname%
+\expandafter\let\csname @end#1\endcsname\@tmp% ...and the end def in @endhandout.
+\expandafter\let\expandafter\@tmp\csname @#1comment\endcsname%
+\expandafter\let\csname @@#1\endcsname\@tmp% Now set @@handout to @handoutcomment by default
+%
+% Defining helper macro @handout{short_name}:
+\expandafter\newcommand\csname @#1\endcsname[1]{% ##1 is the short_name of the handout
+\csname if@restrict#1\endcsname% if we are restricting output...
+\csname @skip#1true\endcsname% skip the handout...
+\edef\resv@b{##1} \edef\@tmplst{\csname @#1list\endcsname} \@for \resv@a:=\@tmplst \do {\ifx \resv@a \resv@b \csname @skip#1false\endcsname \fi}% ...unless the short_name appears in @handoutlist.
+\fi%
+\csname if@skip#1\endcsname \relax% if we're skipping, just relax (so @@handout begins a comment)
+\else \csname @skip#1true\endcsname \expandafter\let\csname @@#1\endcsname\relax% otherwise redefine @@handout to do nothing
+\fi%
+\csname @@#1\endcsname% and finally call our carefully chosen @@handout.
+}%
+%
+% Redefining the handout environment (originally a comment environment):
+\renewenvironment{#1}[2][noname]{% [##1] is the short_name and {##2} is the Long Name of the handout
+\stepcounter{#1}% advance the handout counter
+\@writehandoutentry{#1}{##1}{#2}{\arabic{#1}}{##2}% log the handout in the .toh file
+\csname @#1\endcsname{##1}% call our helper function, which begins a comment if we are skipping this handout
+\handoutid{#2 \arabic{#1}}\title{##2}% reset the header
+\csname #1header\endcsname{\arabic{#1}}{##2}% ...and add a hook for a custom first line.
+}%
+{\expandafter\let\expandafter\@tmp\csname @#1comment\endcsname\expandafter\let\csname @@#1\endcsname\@tmp% reset @@handout to @handoutcomment
+\clearpage% ..and end the page.
+}%
+\expandafter\newcommand\csname #1header\endcsname[2]{\relax}% by default, the custom header hook \handoutheader{page_num}{long_title} does nothing
+}%
+%%%%%
+
+\newcommand{\@writehandoutentry}[5]{\immediate\write\tf@toh{\string \@handoutentry{#1}{#2}{#3}{#4}{#5}}} % write some info to jobname.toh
+\newcommand{\@handoutentry}[5]{\relax} % but don't put anything in the generated document
+\@starttoc{toh} % open jobname.toh, read it in, and get ready to write it out
 
 \endinput
