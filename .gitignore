@@ -4,6 +4,9 @@ pdfs
 # Auxiliary 'table-of-handouts' file
 *.toh
 
+# Generated for Makefile purposes
+.targets
+
 ## Local OS files
 .DS_Store
 

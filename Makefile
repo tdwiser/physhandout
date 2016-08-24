@@ -1,43 +1,46 @@
-# IGNORE = main.tex ax_template.tex aY_test.tex
-# TEXS = $(filter-out $(IGNORE), $(wildcard *.tex))
-# PDFS := $(TEXS:.tex=.pdf)
-# SOLNS := $(TEXS:.tex=_soln.pdf)
-
-JOBS := $(shell ./outfiles.sh < main.tex)
-TEXS := $(JOBS:=.tex)
-PDFS := $(JOBS:=.pdf)
-SOLNS := $(JOBS:=_soln.pdf)
-
+.DEFAULT_GOAL = all
 OUTDIR = aux
 PDFDIR = pdfs
 PDFDIR_SOLN = pdfs/solns
+
 LATEXMK = latexmk -pdf -outdir=$(OUTDIR)
 LATEXMK_SOLN = $(LATEXMK) -pdflatex="pdflatex %O '\PassOptionsToPackage{solution}{physhandout}\input{%S}'"
 
-SUBTEXS := $(addprefix $(OUTDIR)/, $(TEXS))
+TEXS := $(shell find . -type f -name '*.tex')
 
-.SECONDARY: $(SUBTEXS)
+-include .targets
+SOLN_TARGETS := $(TARGETS:.pdf=_soln.pdf)
 
-all: $(PDFS) $(SOLNS)
+.PHONY: all, clean, FORCE_MAKE
+	
+$(OUTDIR)/main.toh: $(TEXS) physhandout.sty
+	@echo Rebuilding handout index...
+	@pdflatex -output-directory=$(OUTDIR) main
 
-$(OUTDIR)/%.tex: main.tex
-	mkdir -p $(OUTDIR)
-	./selectfile.sh -v jobname=$* < main.tex > $(OUTDIR)/$*.tex
+.targets: $(OUTDIR)/main.toh
+	@echo hello from .targets: $(TARGETS)
+	@echo TARGETS := \\ > .targets
+	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}$$/\1_\4_\2.pdf\\/' $(OUTDIR)/main.toh >> .targets
+	@echo \\n CLASSES := $$\(sort \\ >> .targets
+	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}$$/\1\\/' $(OUTDIR)/main.toh >> .targets
+	@echo \) >> .targets
 
-%_soln.pdf: $(OUTDIR)/%.tex FORCE_MAKE
-	$(LATEXMK_SOLN) -jobname="$*_soln" $(OUTDIR)/$* #latexmk -pdf -pdflatex="pdflatex %O '\PassOptionsToPackage{solution}{physhandout}\input{%S}'" -jobname="$*_soln" $*
+all: $(TARGETS) $(SOLN_TARGETS)
+	@mkdir -p $(PDFDIR)
+	@mkdir -p $(PDFDIR_SOLN)
+	for f in $(TARGETS); do cp -a $(OUTDIR)/$$f $(PDFDIR); done
+	for f in $(SOLN_TARGETS); do cp -a $(OUTDIR)/$$f $(PDFDIR_SOLN); done
 
-%.pdf: $(OUTDIR)/%.tex FORCE_MAKE
-	$(LATEXMK) $(OUTDIR)/$* #latexmk -pdf $*
+clean:
+	rm -rf $(OUTDIR)/*
 
-pdfs: $(PDFS) $(SOLNS)
-	mkdir -p $(PDFDIR)
-	mkdir -p $(PDFDIR_SOLN)
-	for f in $(PDFS); do cp -a $(OUTDIR)/$$f $(PDFDIR); done
-	for f in $(SOLNS); do cp -a $(OUTDIR)/$$f $(PDFDIR_SOLN); done
+.SECONDEXPANSION:
+$(CLASSES): $$(filter $$@_%, $(TARGETS)) $$(filter $$@, $(SOLN_TARGETS))
 
-# clean:
-# 	$(LATEXMK) -c $(TEXS:.tex=)
-# 	for tex in $(TEXS:.tex=); do $(LATEXMK_SOLN) -jobname=$${tex}_soln -c $$tex; done;
+main.pdf: FORCE_MAKE
 
-.PHONY: all, clean, pdfs, FORCE_MAKE
+%_soln.pdf: FORCE_MAKE
+	$(LATEXMK) -jobname=$*_soln -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\)_soln.pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\PassOptionsToPackage{solution}{physhandout}\input{main.tex}'" main.tex
+	
+%.pdf: FORCE_MAKE
+	$(LATEXMK) -jobname=$* -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\).pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\input{main.tex}'" main.tex
