@@ -1,140 +1,36 @@
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 
-\ProvidesPackage{physhandout}[2016/03/16 v0.99 Various physics macros for creating handouts]
+\ProvidesPackage{physhandout}[2016/09/01 v0.999 Various physics macros for creating class handouts]
 
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{tensor}
 \RequirePackage{mathtools}
-
-\RequirePackage{comment}
-\RequirePackage{ifthen}
-\RequirePackage{calc}
-
 \RequirePackage{graphicx}
 \RequirePackage[usenames,dvipsnames,svgnames,table]{xcolor}
 
-\RequirePackage{fancyhdr}
-
-\RequirePackage{adjustbox}
-
-\newif\if@solution\@solutionfalse
-\DeclareOption{solution}{
-\@solutiontrue
-}
-
-\DeclareOption{extramacros}{
-\newcommand{\eg}{\textit{e.g.}}
-\newcommand{\ie}{\textit{i.e.}}
-\newcommand{\fracbox}[2]{\mbox{$\frac{#1}{#2}$}}
-\newcommand{\onehalf}{\fracbox{1}{2}}
-\newcommand{\onethird}{\fracbox{1}{3}}
-\newcommand{\delt}[1]{\mathrm{d}{#1}}
-\newcommand{\deltt}[1]{\mathrm{d}^2{#1}}
-\newcommand{\deriv}[2]{\frac{\delt{#1}}{\delt{#2}}}
-\newcommand{\derivt}[2]{\frac{\deltt{#1}}{\delt{#2}^2}}
-\newcommand{\pderiv}[2]{\frac{\partial {#1}}{\partial {#2}}}
-\newcommand{\pderivt}[2]{\frac{\partial^2 {#1}}{\partial {#2}^2}}
-}
-
-\DeclareOption{spinors}{
-\newcommand*{\smket}[2]{\ket{{#1}\ {#2}}}
-\newcommand*{\smbra}[2]{\bra{{#1}\ {#2}}}
-
-%Spinors
-\newcommand*{\spinup}{\smket{\frac{1}{2}}{+\frac{1}{2}}}
-\newcommand*{\spindown}{\smket{\frac{1}{2}}{-\frac{1}{2}}}
-\newcommand*{\spinupdown}{\smket{\frac{1}{2}}{\pm\frac{1}{2}}}
-%Spin-1/2 vectors \chi
-\newcommand*{\vchiplus}{\vb*{\chi_{+}}}
-\newcommand*{\vchiminus}{\vb*{\chi_{-}}}
-\newcommand*{\vchi}{\vb*{\chi}}
-
-\newcommand*{\vchiplusx}{\vb*{\chi_{+}^{(x)}}}
-\newcommand*{\vchiminusx}{\vb*{\chi_{-}^{(x)}}}
-\newcommand*{\vchipmx}{\vb*{\chi_{\pm}^{(x)}}}
-\newcommand*{\vchix}{\vb*{\chi^{(x)}}}
-
-\newcommand*{\vchiplusy}{\vb*{\chi_{+}^{(y)}}}
-\newcommand*{\vchiminusy}{\vb*{\chi_{-}^{(y)}}}
-\newcommand*{\vchipmy}{\vb*{\chi_{\pm}^{(y)}}}
-\newcommand*{\vchiy}{\vb*{\chi^{(y)}}}
-
-\newcommand*{\upup}{\uparrow\uparrow}
-\newcommand*{\updown}{\uparrow\downarrow}
-\newcommand*{\downup}{\downarrow\uparrow}
-\newcommand*{\downdown}{\downarrow\downarrow}
-}
-
-\DeclareOption{plain}{
-\AtBeginDocument{
-\let\maketitle\@maketitle
-\pagestyle{plain}
-}
-}
-
-\newif\if@mygeometry\@mygeometryfalse
-\DeclareOption{mygeometry}{
-	\@mygeometrytrue
-}
-
-\newif\if@physicspkg\@physicspkgfalse
-\DeclareOption{physics}{
-	\@physicspkgtrue
-}
+\RequirePackage{physics}
 
 \ProcessOptions\relax
-
-
-\if@mygeometry
-
-\else
-
-\RequirePackage[margin=1in]{geometry}
-
-\fi
-
-\if@physicspkg
-\RequirePackage{physics}
-\else
-\newcommand{\eps}{\epsilon}
-\newcommand{\eo}{\epsilon_0}
-\newcommand{\mo}{\mu_0}
-\newcommand{\del}{\vec \nabla}
-\newcommand{\grad}{\del}
-\newcommand{\dvg}{\del \cdot}
-\newcommand{\curl}{\del \times}
-\newcommand{\dd}{\mathrm{d}}
-\newcommand{\td}[2]{\frac{d#1}{d#2}}
-\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
-\newcommand{\emf}{\mathcal{E}}
-
-\DeclarePairedDelimiter\bra{\langle}{\rvert}
-\DeclarePairedDelimiter\ket{\lvert}{\rangle}
-\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1 \delimsize\vert #2}
-\DeclarePairedDelimiterX\inner[2]{\langle}{\rangle}{#1,#2}
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}
-%  * version automatically scales the delimiters
-%   \bra{a}       &= \bra*{\frac{a}{1}}
-%   \ket{a}       &= \ket*{\frac{a}{1}}
-%   \braket{a}{b} &= \braket*{\frac{a}{1}}{\frac{b}{1}}
-%   \inner{a}{b}  &= \inner*{\frac{a}{1}}{\frac{b}{1}}
-%   \abs{a}       &= \abs*{\frac{a}{1}}
-\fi
 
 \DeclarePairedDelimiter\set{\lbrace}{\rbrace}
 \DeclarePairedDelimiter\round{(}{)}
 
-\newcommand{\expect}[1]{\langle #1\rangle}
+\let\dvg\div
+\let\td\dv
+\let\pd\pdv
 
-\newcommand{\unit}[1]{\ensuremath{\ \mathrm{#1}}}
+\newcommand{\expect}[1]{\left\langle #1\right\rangle}
+
+\newcommand{\unit}[1]{\ensuremath{\@ifstar\relax{\ }\mathrm{#1}}}
 
 \newcommand{\tto}[1]{\ensuremath{\overset{#1}{\longrightarrow}}}
 
 \newcommand{\ii}[1]{\indices{#1}}
 
-\newcommand{\workspace}[1][6pc]{\hspace*{1pt}\vspace*{#1}}
+\newcommand{\eps}{\epsilon}
+\newcommand{\eo}{\epsilon_0}
+\newcommand{\mo}{\mu_0}
 
 \def\@problemname{Problem}
 \newcommand{\problemname}[1]{\def\@problemname{#1}}
@@ -145,140 +41,8 @@
 \advance\@enumdepth\@ne
 \par\ifthenelse{\equal{#1}{-1}}{\refstepcounter{problem}}{\setcounter{problem}{#1-1}\refstepcounter{problem}}\medskip\noindent{\bf {\@problemname} \arabic{problem}.}~\ignorespaces}{\par\medskip\endgroup}
 
-\newcounter{ppart}[problem]
-\setcounter{ppart}{0}
-\newcommand{\ppart}{\stepcounter{ppart}\par\noindent(\alph{ppart}) \ignorespaces}
-
 \newcommand{\hint}[1]{{\em (Hint: #1)}}
 
-\newcommand*{\annot}[1]{\tag*{\footnotesize{\textcolor{black!70}{#1}}}}
-
-% \newcommand*{\activity}[1]{{\Large\color{blue}\sc {#1}}}
-
-% \newcommand*{\miniactivity}[1]{{\color{blue}\sc {#1}}}
-
-\newcommand*{\exercise}
-[1]{{\large\color{blue}\noindent \rm {#1}}}
-
-
-\if@solution
-
-\newcounter{pparts}[problem]
-\setcounter{pparts}{0}
-\newenvironment{solution}{\begingroup\renewcommand{\ppart}{\stepcounter{pparts}\par\noindent(\alph{pparts}) \ignorespaces}\par\medskip\hrule\par\medskip\noindent{\bf Solution.} \ignorespaces}{\par\medskip\hrule\par\medskip\endgroup}
-\excludecomment{antisolution}
-\renewcommand{\workspace}[1][6pc]{\relax}
-
-\newcommand{\soln}[1]{{\color{blue}#1}}
-\newcommand{\bigsoln}[1]{\soln{#1}}
-\newcommand{\solnx}[1]{\soln{#1}}
-\newcommand*{\solnannot}[1]{\annot{#1}}
-
-\else
-
-\excludecomment{solution}
-\includecomment{antisolution}
-
-\newcommand*{\solnannot}[1]{\relax}
-\newcommand{\soln}[1]{\phantom{#1}}
-\newcommand{\bigsoln}[1]{\adjustbox{minipage=\textwidth,phantom}{#1}}
-\newcommand{\solnx}[1]{\relax}
-
-\fi
-
-\def\@maketitle{%
-  \newpage
-  \null
-  \vskip 2em%
-  \begin{center}%
-  \let \footnote \thanks
-    {\LARGE \@title \par}%
-    \ifx\@author\empty
-	\relax
-	\else
-    \vskip 1.5em%
-	{\large
-      \lineskip .5em%
-      \begin{tabular}[t]{c}%
-        \@author
-      \end{tabular}\par}%
-    \fi%
-	\ifx\@date\empty
-	\relax
-	\else
-    \vskip 1em
-	{\large \@date}%
-	\fi
-  \end{center}%
-  \par
-  \vskip 1.5em}
-
-\let\@handoutid\relax
-\newcommand{\handoutid}[1]{\gdef\@handoutid{#1}}
-\let\@copyrightinfo\relax
-\newcommand{\copyrightinfo}[1]{\gdef\@copyrightinfo{#1}}
-\let\@courseinfo\relax
-\newcommand{\courseinfo}[1]{\gdef\@courseinfo{#1}}
-
-\let\maketitle\relax
-\pagestyle{fancy}
-\lhead{\@handoutid}
-\chead{\large\textsc{\@title}}
-\rhead{\thepage}
-\lfoot{\@courseinfo}
-\cfoot{}
-\rfoot{\scriptsize\textsc{\@copyrightinfo}}
-\renewcommand{\footrulewidth}{0.4pt}
-\setlength{\headsep}{12pt}
-
-% Begin code to handle multiple handouts of multiple types
-
-%%%%% Create a new handout environment
-\newcommand{\inithandout}[2]{% #1 is the environment name (e.g. lecture) and #2 is the `pretty' form (e.g. Lecture)
-\excludecomment{#1}% Initialize handout environment, default is exclude (we will override this)
-\newcounter{#1}%
-%
-\expandafter\newif\csname if@restrict#1\endcsname% flag for restricting output to only some handouts
-\csname @restrict#1false\endcsname% by default include all handouts
-\expandafter\newcommand\csname only#1\endcsname[1]{\csname @restrict#1true\endcsname\expandafter\edef\csname @#1list\endcsname{##1}}% \onlyhandout{h1,h2,...} to set the list of included handouts
-\expandafter\newif\csname if@skip#1\endcsname% bool to store whether or not to skip this handout
-\csname @skip#1false\endcsname%
-\expandafter\let\expandafter\@tmp\csname #1\endcsname% black magic to store the original comment environment def in @handoutcomment...
-\expandafter\let\csname @#1comment\endcsname\@tmp%
-\expandafter\let\expandafter\@tmp\csname end#1\endcsname%
-\expandafter\let\csname @end#1\endcsname\@tmp% ...and the end def in @endhandout.
-\expandafter\let\expandafter\@tmp\csname @#1comment\endcsname%
-\expandafter\let\csname @@#1\endcsname\@tmp% Now set @@handout to @handoutcomment by default
-%
-% Defining helper macro @handout{short_name}:
-\expandafter\newcommand\csname @#1\endcsname[1]{% ##1 is the short_name of the handout
-\csname if@restrict#1\endcsname% if we are restricting output...
-\csname @skip#1true\endcsname% skip the handout...
-\edef\resv@b{##1} \edef\@tmplst{\csname @#1list\endcsname} \@for \resv@a:=\@tmplst \do {\ifx \resv@a \resv@b \csname @skip#1false\endcsname \fi}% ...unless the short_name appears in @handoutlist.
-\fi%
-\csname if@skip#1\endcsname \relax% if we're skipping, just relax (so @@handout begins a comment)
-\else \csname @skip#1true\endcsname \expandafter\let\csname @@#1\endcsname\relax% otherwise redefine @@handout to do nothing
-\fi%
-\csname @@#1\endcsname% and finally call our carefully chosen @@handout.
-}%
-%
-% Redefining the handout environment (originally a comment environment):
-\renewenvironment{#1}[2][noname]{% [##1] is the short_name and {##2} is the Long Name of the handout
-\stepcounter{#1}% advance the handout counter
-\@writehandoutentry{#1}{##1}{#2}{\arabic{#1}}{##2}% log the handout in the .toh file
-\csname @#1\endcsname{##1}% call our helper function, which begins a comment if we are skipping this handout
-\handoutid{#2 \arabic{#1}}\title{##2}% reset the header
-\csname #1header\endcsname{\arabic{#1}}{##2}% ...and add a hook for a custom first line.
-}%
-{\expandafter\let\expandafter\@tmp\csname @#1comment\endcsname\expandafter\let\csname @@#1\endcsname\@tmp% reset @@handout to @handoutcomment
-\clearpage% ..and end the page.
-}%
-\expandafter\newcommand\csname #1header\endcsname[2]{\relax}% by default, the custom header hook \handoutheader{page_num}{long_title} does nothing
-}%
-%%%%%
-
-\newcommand{\@writehandoutentry}[5]{\immediate\write\tf@toh{\string \@handoutentry{#1}{#2}{#3}{#4}{#5}}} % write some info to jobname.toh
-\newcommand{\@handoutentry}[5]{\relax} % but don't put anything in the generated document
-\@starttoc{toh} % open jobname.toh, read it in, and get ready to write it out
+\newcommand*{\exercise}[1]{{\large\color{blue}\noindent \rm {#1}}}
 
 \endinput

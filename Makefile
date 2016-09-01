@@ -41,9 +41,12 @@ clean:
 $(CLASSES): $$(filter $$@_%, $(TARGETS)) $$(filter $$@, $(SOLN_TARGETS))
 
 main.pdf: FORCE_MAKE
+	@$(LATEXMK) main.tex
+	@echo Copying pdf...
+	@cp -a $(OUTDIR)/main.pdf $(PDFDIR)
 
 %_soln.pdf: FORCE_MAKE
-	@$(LATEXMK) -jobname=$*_soln -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\)_soln.pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\PassOptionsToPackage{solution}{physhandout}\input{main.tex}'" main.tex
+	@$(LATEXMK) -jobname=$*_soln -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\)_soln.pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\PassOptionsToPackage{show}{solution}\input{main.tex}'" main.tex
 	
 %.pdf: FORCE_MAKE
 	@$(LATEXMK) -jobname=$* -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\).pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\input{main.tex}'" main.tex
