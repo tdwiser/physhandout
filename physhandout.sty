@@ -22,7 +22,9 @@
 
 \newcommand{\expect}[1]{\left\langle #1\right\rangle}
 
-\newcommand{\unit}[1]{\ensuremath{\@ifstar\relax{\ }\mathrm{#1}}}
+\def\unit{\@ifstar\@unitns\@unit}
+\newcommand{\@unit}[1]{\ensuremath{\ \mathrm{#1}}}
+\newcommand{\@unitns}[1]{\ensuremath{\mathrm{#1}}}
 
 \newcommand{\tto}[1]{\ensuremath{\overset{#1}{\longrightarrow}}}
 
