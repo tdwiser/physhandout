@@ -28,9 +28,6 @@ $(OUTDIR)/main.toh: $(TEXS) physhandout.sty
 all: $(TARGETS) $(SOLN_TARGETS)
 	@mkdir -p $(PDFDIR)
 	@mkdir -p $(PDFDIR_SOLN)
-	@echo Copying pdfs...
-	@for f in $(TARGETS); do cp -a $(OUTDIR)/$$f $(PDFDIR); done
-	@for f in $(SOLN_TARGETS); do cp -a $(OUTDIR)/$$f $(PDFDIR_SOLN); done
 
 clean:
 	for f in $(TARGETS:.pdf=) $(SOLN_TARGETS:.pdf=); do $(LATEXMK) -C -jobname=$$f main.tex; done
@@ -47,6 +44,8 @@ main.pdf: FORCE_MAKE
 
 %_soln.pdf: FORCE_MAKE
 	@$(LATEXMK) -jobname=$*_soln -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\)_soln.pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\PassOptionsToPackage{show}{solution}\input{main.tex}'" main.tex
+	@cp -a $(OUTDIR)/$@ $(PDFDIR_SOLN)
 	
 %.pdf: FORCE_MAKE
 	@$(LATEXMK) -jobname=$* -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\).pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\input{main.tex}'" main.tex
+	@cp -a $(OUTDIR)/$@ $(PDFDIR)
