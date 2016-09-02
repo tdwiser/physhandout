@@ -39,7 +39,7 @@
 
 \newcounter{problem}
 \setcounter{problem}{0}
-\newenvironment{problem}[1][-1]{\begingroup
+\newenvironment{problem}[1][-1]{\pagebreak[3]\begingroup
 \advance\@enumdepth\@ne
 \par\ifthenelse{\equal{#1}{-1}}{\refstepcounter{problem}}{\setcounter{problem}{#1-1}\refstepcounter{problem}}\medskip\noindent{\bf {\@problemname} \arabic{problem}.}~\ignorespaces}{\par\medskip\endgroup}
 
