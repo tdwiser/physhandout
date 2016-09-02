@@ -78,6 +78,8 @@
 
 % Begin code to handle multiple handouts of multiple types
 
+\newcounter{handout}
+\setcounter{handout}{0}
 %%%%% Create a new handout environment with \inithandout[short]{Long Name}; enclose handouts in \begin{short}[tag]{Title}...\end{short}
 \newcommand{\inithandout}[2]{% #1 is the environment name (e.g. lecture) and #2 is the `pretty' form (e.g. Lecture)
 \excludecomment{#1}% Initialize handout environment, default is exclude (we will override this)
@@ -109,7 +111,7 @@
 %
 % Redefining the handout environment (originally a comment environment):
 \renewenvironment{#1}[2][noname]{% [##1] is the short_name and {##2} is the Long Name of the handout
-\stepcounter{#1}% advance the handout counter
+\stepcounter{handout}\stepcounter{#1}% advance the handout counter (total and specific)
 \@writehandoutentry{#1}{##1}{#2}{\arabic{#1}}{##2}% log the handout in the .toh file
 \csname @#1\endcsname{##1}% call our helper function, which begins a comment if we are skipping this handout
 \handoutid{#2 \arabic{#1}}\title{##2}% reset the header

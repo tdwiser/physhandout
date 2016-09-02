@@ -11,6 +11,8 @@
 
 \RequirePackage[italicdiff]{physics}
 
+\RequirePackage{handouts}
+
 \ProcessOptions\relax
 
 \DeclarePairedDelimiter\set{\lbrace}{\rbrace}
@@ -37,7 +39,7 @@
 \def\@problemname{Problem}
 \newcommand{\problemname}[1]{\def\@problemname{#1}}
 
-\newcounter{problem}
+\newcounter{problem}[handout]
 \setcounter{problem}{0}
 \newenvironment{problem}[1][-1]{\pagebreak[3]\begingroup
 \advance\@enumdepth\@ne
