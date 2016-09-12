@@ -111,7 +111,7 @@
 %
 % Redefining the handout environment (originally a comment environment):
 \renewenvironment{#1}[2][noname]{% [##1] is the short_name and {##2} is the Long Name of the handout
-\stepcounter{handout}\stepcounter{#1}% advance the handout counter (total and specific)
+\stepcounter{handout}\refstepcounter{#1}\label{#1:##1}% advance the handout counter (total and specific) and put in a 'real' label (which doesn't always get aux'd)
 \@writehandoutentry{#1}{##1}{#2}{\arabic{#1}}{##2}% log the handout in the .toh file
 \csname @#1\endcsname{##1}% call our helper function, which begins a comment if we are skipping this handout
 \handoutid{#2 \arabic{#1}}\title{##2}% reset the header
@@ -124,8 +124,10 @@
 }%
 %%%%%
 
+\newcommand{\@iflabelexists}[3]{\@ifundefined{r@#1}{#3}{#2}}
+
 \newcommand{\@writehandoutentry}[5]{\immediate\write\tf@toh{\string \@handoutentry{#1}{#2}{#3}{#4}{#5}}} % write some info to jobname.toh
-\newcommand{\@handoutentry}[5]{\relax} % but don't put anything in the generated document
+\newcommand{\@handoutentry}[5]{\AtBeginDocument{\@iflabelexists{#1:#2}{}{\newlabel{#1:#2}{{#4}{}{}{}{}}}}} % don't put anything in the generated document but put a dummy label in for any handouts that didn't get aux'd, so we can cross-reference them
 \@starttoc{toh} % open jobname.toh, read it in, and get ready to write it out
 
 \endinput
