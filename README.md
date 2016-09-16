@@ -14,22 +14,22 @@ The handouts for a given course are defined in the main.tex file.
 There can be multiple types of handouts (e.g. lectures, problem sets, activity sheets) and each type is automatically numbered separately.
 In our case, we have `lecture`, `activity`, and `pset` handout classes.
 
-To actually create a handout, use the following format:
+To actually create a handout, use the following format in the main.tex file:
 
     \begin{<handout_class>}[<tag>]{<Title>}
         \input{<filename.tex>}
 	\end{<handout_class>}
 
 where `<handout_class>` is `lecture`, `activity`, `pset`, etc.;
-`<tag>` is a short name for the handout which you can refer to elsewhere;
-`<Title>` is the title that will appear in the header;
+`<tag>` is a short name for the handout which you can refer to elsewhere (e.g. to specific which handouts to generate, or reference the number of a handout);
+`<Title>` is the title that will appear in the header of the handout;
 and `<filename.tex>` is the file containing the LaTeX code for the handout.
 (You don't necessarily have to use the `\input` line; you could put the code directly in the main.tex file.
 However, as we get a large number of handouts going, it will be much cleaner to separate things out.)
 
-In our Overleaf project, we have a subfolder for the .tex files for each type of handout.
+In our Overleaf project, we have a subfolder for the .tex files for each type of handout, as well as one for figures.
 
-Note that the numbering of the handouts is automatic and based on the order they appear in main.tex.
+Note that the numbering of the handouts is automatic and based on the order that their `\begin{}[]{}...\end{}` code appears in main.tex.
 However, you can interleave (say) `activity`s and `lecture`s without affecting the numbering.
 Basically, the idea should be to list the handouts in main.tex in chronological order, and the numbering should take care of itself.
 
@@ -66,7 +66,7 @@ Depending on the setting in main.tex, the solutions will either be completely hi
 There are FOUR different ways to include solutions, depending on the context:
 
 * `\begin{solution}...\end{solution}` is for long solutions (e.g. to pset problems).
-  They are completely ignored when hidden and decorated with some horizontal rules and *Solution.* at the beginning.
+  They are completely ignored when hidden and decorated with some horizontal rules and **Solution.** at the beginning when unhidden.
 * `\soln{...}` is for short, inline solutions (e.g. in lecture exercises) that leave a space for the student to write the solution in.
   This works inside math environments, etc.
 * `\solnx{...}` is the same as `\soln` except it doesn't leave a space for the student to write in.
