@@ -32,9 +32,26 @@
 \end{activity}
 
 \begin{activity}[sample_activity]{A Sample Activity}
-	Here is the \LaTeX code for this sample activity, which is automatically numbered (this is Activity~\ref{activity:sample_activity}; note that Activity~\ref{activity:lame_activity} can still be \verb|\ref|'d even though it isn't in this file).
+	Here is the \LaTeX\ code for this sample activity, which is automatically numbered (this is Activity~\ref{activity:sample_activity}; note that Activity~\ref{activity:lame_activity} can still be \verb|\ref|'d even though it isn't in this file).
 	
 	You could also \verb|\input{file.tex}| here instead to keep things clean (recommended!)
+	
+	\subsection*{Solution macros:}
+		Here is an equation: $E=mc^2$
+	\begin{solution}
+	    This is the solution to that equation, in long form: $m=E/c^2$
+	\end{solution}
+
+	    Here is an inline solution (\soln{answer}) which leaves space for the answer.
+    
+	    \bigsoln{This a multi
+    
+	    paragraph
+    
+	    solution.
+	    } (leaves one par-ish of space)
+   
+	   	Here is an inline solution (\solnx{answer}) which doesn't leave space
 \end{activity}
 
 \begin{pset}[ps1]{A Problem Set}
