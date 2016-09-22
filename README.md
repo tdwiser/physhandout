@@ -79,5 +79,3 @@ Working Locally with git
 ------------------------
 
 If you prefer to use your favorite TeX editor, work offline, or just don't like Overleaf, it's possible to grab a local copy of the Overleaf repository using git and push your changes back to the cloud.
-If you haven't used git before, there is a steepish learning curve and it is not very forgiving.
-Talk to Tim if you are interested.

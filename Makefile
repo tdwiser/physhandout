@@ -4,7 +4,6 @@ PDFDIR = pdfs
 PDFDIR_SOLN = pdfs/solns
 
 LATEXMK = latexmk -pdf -outdir=$(OUTDIR)
-LATEXMK_SOLN = $(LATEXMK) -pdflatex="pdflatex %O '\PassOptionsToPackage{solution}{physhandout}\input{%S}'"
 
 TEXS := $(shell find . -type f -name '*.tex')
 
