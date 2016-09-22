@@ -1,0 +1,44 @@
+\documentclass[12pt]{article}
+
+\usepackage{handouts} % multi-handout handling
+\usepackage[]{solution} % include [show] to make solutions visible.
+\usepackage{physhandout} % physics-specific stuff
+
+\usepackage{hyperref} % currently required, will make optional in future
+\usepackage{graphicx}
+
+\courseinfo{Course Name (Year)} % appears bottom-left footer
+\author{} % does nothing unless you use [plain] option to handouts
+\date{} % same
+
+\copyrightinfo{\url{https://github.com/tdwiser/physhandout}} %sets a (global) bottom-right footer. Can be set inside a handout BUT carries over to following handouts
+% \problemname{...} %changes the `Problem #' text to `... #' when you \begin{problem}...\end{problem}
+
+\inithandout{lecture}{Lecture} % creates a new type of handout, a Lecture, which can be invoked with \begin{lecture}...\end{lecture}
+% \renewcommand{\lectureheader}[2]{\Large Lecture #1: #2} % can be used to insert something at the top of each lecture (say)
+
+\inithandout{activity}{Activity}
+\inithandout{pset}{Problem Set}
+% \inithandout{misc}{Handout} % can't call it ``handout'' without causing some numbering issues (or worse?)
+
+\onlylecture{} % don't generate any of the lectures
+\onlyactivity{sample_activity} % only produce sample_activity, nothing else
+% \onlypset{} % if you leave out an \only, they will all be made
+
+\begin{document}
+
+\begin{activity}[lame_activity]{A Lame Activity}
+	We don't want this activity show up in the pdf file, so it's not listed in the \verb|\onlyactivity{}| command above.
+\end{activity}
+
+\begin{activity}[sample_activity]{A Sample Activity}
+	Here is the \LaTeX code for this sample activity, which is automatically numbered (this is Activity~\ref{activity:sample_activity}; note that Activity~\ref{activity:lame_activity} can still be \verb|\ref|'d even though it isn't in this file).
+	
+	You could also \verb|\input{file.tex}| here instead to keep things clean (recommended!)
+\end{activity}
+
+\begin{pset}[ps1]{A Problem Set}
+	This Problem Set (which is number~\ref{pset:ps1}, numbered independently from the activities, etc.) will show up in the pdf file because there is no \verb|\onlypset{}| command to tell it not to.
+\end{pset}
+
+\end{document}
