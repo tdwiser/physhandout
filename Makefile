@@ -20,7 +20,9 @@ $(OUTDIR)/main.toh: $(TEXS) physhandout.sty
 	@echo hello from .targets: $(TARGETS)
 	@echo TARGETS := \\ > .targets
 	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}$$/\1_\4_\2.pdf\\/' $(OUTDIR)/main.toh >> .targets
-	@echo \\n CLASSES := $$\(sort \\ >> .targets
+	@echo >> .targets
+	@echo >> .targets
+	@echo CLASSES := $$\(sort \\ >> .targets
 	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}$$/\1\\/' $(OUTDIR)/main.toh >> .targets
 	@echo \) >> .targets
 
