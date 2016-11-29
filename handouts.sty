@@ -5,6 +5,8 @@
 \RequirePackage{comment} % The handout environments are based on comments to safely include/exclude them from compilation
 \RequirePackage{fancyhdr} % For being stylish
 
+\RequirePackage{tocstyle}
+
 % Package option [plain] turns off the fancyhdr styling and makes each handout look like a normal article
 \DeclareOption{plain}{
 \AtBeginDocument{
@@ -87,7 +89,7 @@
 %
 \expandafter\newif\csname if@restrict#1\endcsname% flag for restricting output to only some handouts
 \csname @restrict#1false\endcsname% by default include all handouts
-\expandafter\newcommand\csname only#1\endcsname[1]{\csname @restrict#1true\endcsname\expandafter\edef\csname @#1list\endcsname{##1}}% \onlyhandout{h1,h2,...} to set the list of included handouts
+\expandafter\newcommand\csname only#1\endcsname[1]{\csname @restrict#1true\endcsname\expandafter\xdef\csname @#1list\endcsname{##1}}% \onlyhandout{h1,h2,...} to set the list of included handouts
 \expandafter\newif\csname if@skip#1\endcsname% bool to store whether or not to skip this handout
 \csname @skip#1false\endcsname%
 \expandafter\let\expandafter\@tmp\csname #1\endcsname% black magic to store the original comment environment def in @handoutcomment...
@@ -114,6 +116,7 @@
 \stepcounter{handout}\refstepcounter{#1}\label{#1:##1}% advance the handout counter (total and specific) and put in a 'real' label (which doesn't always get aux'd)
 \@writehandoutentry{#1}{##1}{#2}{\arabic{#1}}{##2}% log the handout in the .toh file
 \csname @#1\endcsname{##1}% call our helper function, which begins a comment if we are skipping this handout
+\addcontentsline{toc}{part}{#2 \arabic{#1}: ##2}
 \handoutid{#2 \arabic{#1}}\title{##2}% reset the header
 \csname #1header\endcsname{\arabic{#1}}{##2}% ...and add a hook for a custom first line.
 }%
@@ -129,5 +132,14 @@
 \newcommand{\@writehandoutentry}[5]{\immediate\write\tf@toh{\string \@handoutentry{#1}{#2}{#3}{#4}{#5}}} % write some info to jobname.toh
 \newcommand{\@handoutentry}[5]{\AtBeginDocument{\@iflabelexists{#1:#2}{}{\newlabel{#1:#2}{{#4}{}{}{}{}}}}} % don't put anything in the generated document but put a dummy label in for any handouts that didn't get aux'd, so we can cross-reference them
 \@starttoc{toh} % open jobname.toh, read it in, and get ready to write it out
+
+\let\@oldsection\section
+\newcommand{\@newsectionstar}[1]{\@oldsection*{#1}\addcontentsline{toc}{section}{\numberline{}#1}}
+\def\section{\@ifstar{\@newsectionstar}{\@oldsection}}
+\def\notocsection{\@oldsection*}
+
+\settocfeature[toc][-1]{entryhook}{\large\bfseries}
+\settocfeature[toc][-1]{leaders}{\hfill}
+\settocfeature[toc][-1]{pagenumberhook}{\normalfont\normalsize}
 
 \endinput
