@@ -13,10 +13,15 @@
 \@solutiontrue
 }
 
+\DeclareOption{hide}{
+\@solutionfalse
+}
+
 \ProcessOptions\relax
 
-\newcommand{\showsolution}{\@solutiontrue}
-\newcommand{\hidesolution}{\@solutionfalse}
+% these don't work
+%\newcommand{\showsolution}{\@solutiontrue}
+%\newcommand{\hidesolution}{\@solutionfalse}
 
 \newcommand{\workspace}[1][6pc]{\hspace*{1pt}\vspace*{#1}}
 
@@ -24,13 +29,13 @@
 
 \if@solution
 
-\newenvironment{solution}{\par\medskip\hrule\par\medskip\noindent{\bf Solution.} \ignorespaces}{\par\medskip\hrule\par\medskip}
+\newenvironment{solution}{\par\medskip\hrule\par\medskip\noindent{\bf Solution.} \color{cyan}\ignorespaces}{\par\medskip\hrule\par\medskip}
 
 \excludecomment{antisolution}
 
 \renewcommand{\workspace}[1][6pc]{\relax}
 
-\newcommand{\soln}[1]{{\color{blue}#1}}
+\newcommand{\soln}[1]{{\leavevmode\color{cyan}#1}}
 \newcommand{\bigsoln}[1]{\soln{#1}}
 \newcommand{\solnx}[1]{\soln{#1}}
 \newcommand*{\solnannot}[1]{\annot{#1}}

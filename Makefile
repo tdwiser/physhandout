@@ -19,9 +19,9 @@ $(OUTDIR)/main.toh: $(TEXS) physhandout.sty
 .targets: $(OUTDIR)/main.toh
 	@echo hello from .targets: $(TARGETS)
 	@echo TARGETS := \\ > .targets
-	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}$$/\1_\4_\2.pdf\\/' $(OUTDIR)/main.toh >> .targets
+	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\(.*\)}$$/\1_\4_\2.pdf\\/' $(OUTDIR)/main.toh >> .targets
 	@echo \\n CLASSES := $$\(sort \\ >> .targets
-	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}$$/\1\\/' $(OUTDIR)/main.toh >> .targets
+	@sed -e 's/^\\@handoutentry{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\([^}]*\)}{\(.*\)}$$/\1\\/' $(OUTDIR)/main.toh >> .targets
 	@echo \) >> .targets
 
 all: $(TARGETS) $(SOLN_TARGETS)
@@ -46,5 +46,5 @@ main.pdf: FORCE_MAKE
 	@cp -a $(OUTDIR)/$@ $(PDFDIR_SOLN)
 	
 %.pdf: FORCE_MAKE
-	@$(LATEXMK) -jobname=$* -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\).pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\input{main.tex}'" main.tex
+	@$(LATEXMK) -jobname=$* -pdflatex="pdflatex %O '\AtBeginDocument{$(shell class=`echo $@ | sed -e 's/^\([^_]*\)_.*$$/\1/'`;tag=`echo $@ | sed -e 's/^[^_]*_[^_]*_\(.*\).pdf$$/\1/'`; for c in $(CLASSES); do echo \\\\only$$c{}; done; echo \\\\only$$class{$$tag})}\PassOptionsToPackage{hide}{solution}\input{main.tex}'" main.tex
 	@cp -a $(OUTDIR)/$@ $(PDFDIR)
