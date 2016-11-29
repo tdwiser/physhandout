@@ -52,5 +52,8 @@
 \newcommand{\hint}[1]{{\em (Hint: #1)}}
 
 \newcommand{\exercise}[1]{{\large\color{blue}\noindent #1 \par}}
+\newcounter{ex}[handout]
+\setcounter{ex}{0}
+\newcommand{\exno}{\refstepcounter{ex}\arabic{ex}}
 
 \endinput
