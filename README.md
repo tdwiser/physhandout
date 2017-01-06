@@ -12,7 +12,7 @@ Creating Handouts
 
 The handouts for a given course are defined in the main.tex file.
 There can be multiple types of handouts (e.g. lectures, problem sets, activity sheets) and each type is automatically numbered separately.
-In our case, we have `lecture`, `activity`, and `pset` handout classes.
+In our case, we have `lecture`, `activity`, and `pset` handout classes. These classes are created using `\inithandout{short_name}{Long Name}`, like `\inithandout{pset}{Problem Set}`.
 
 To actually create a handout, use the following format in the main.tex file:
 
@@ -54,6 +54,26 @@ which means that the only handouts generated are the current lecture and activit
 
 This seems a bit complicated at first, but it addresses an issue with Overleaf so that multiple people can be working on multiple handouts at the same time, in the same project.
 
+The handouts are added to the LaTeX table of contents, so you can generate a list of the handouts in a given PDF file by using `\tableofcontents`. Since the `\only...` commands are global in scope, you can do some interesting tricks like creating a 'meta-handout' with a table of contents:
+
+    \inithandout{meta}{Meta-Handout}
+	...
+	\onlymeta{sr_contents}
+	
+	\begin{meta}[sr_contents]{Special Relativity Unit}
+        \onlylecture{time_dilation,len_con,spacetime,lorentz,causality,four_vectors,energy} % include all SR lectures
+		\onlyactivity{longitudinal_light_clock,binomial,simultaneity,spacetime,lonely_photon,pion_decay} % include all SR activities
+		\onlypset{} % no problem sets
+		\onlymeta{} % we are already inside the relevant meta, so we don't need to include it here
+	
+		\handoutid{}
+		\def\contentsname{List of Materials}
+		\tableofcontents
+	\end{misc}
+	
+	...definitions of the rest of the handouts...
+
+
 Writing Solutions
 -----------------
 
@@ -61,21 +81,24 @@ There are several ways to include solutions into the original .tex files.
 Depending on the setting in main.tex, the solutions will either be completely hidden or show up.
 `\usepackage{solution}` defines the solution macros but hides the contents (in various ways);
 `\usepackage[show]{solution}` shows the solutions.
-(I'm working on a way to turn solutions on/off for handouts independently, rather than for the whole document, but this is in progress.)
 
 There are FOUR different ways to include solutions, depending on the context:
 
 * `\begin{solution}...\end{solution}` is for long solutions (e.g. to pset problems).
   They are completely ignored when hidden and decorated with some horizontal rules and **Solution.** at the beginning when unhidden.
+  **The `\begin` and `\end` commands MUST appear at the beginning of the line with no leading whitespace and nothing else on the line.**
+  (This is a quirk of the `comment` package which handles the showing/hiding of the solutions. It can lead to very very non-obvious, sometimes silent, failures, like missing part of your document in the generated PDF file.)
 * `\soln{...}` is for short, inline solutions (e.g. in lecture exercises) that leave a space for the student to write the solution in.
-  This works inside math environments, etc.
+  This works inside math environments, etc. There can be no paragraph breaks, or anything equivalent to a paragraph break (such as a `$$display-mode equation$$` or `align` environment.) LaTeX will tell you that it can't find a closing brace if you try to put in a paragraph break.
 * `\solnx{...}` is the same as `\soln` except it doesn't leave a space for the student to write in.
 * `\bigsoln{...}` allows longer inline solutions which include paragraph breaks, etc.
-  Some space is left for writing in an answer, but it's not as big as the solution itself.
+  Some space is left for writing in an answer, but it's not always as big as the solution itself. It's often better to use `\solnx` + `\workspace` (see below) for more control.
 
-Also, there is a nice way to include some space in the original document that disappears in the solution: `\workspace` (or `\workspace[<length>]`).
+There is a nice way to include some space in the original document that disappears in the solution: `\workspace` (or `\workspace[<length>]`).
+
+Finally, you may want to selectively show/hide solutions in parts of a document. For this you can use `\showsolution` and `\hidesolution` which show/hide the solutions after that point, up through the end of the scope (usually the current handout).
 
 Working Locally with git
 ------------------------
 
-If you prefer to use your favorite TeX editor, work offline, or just don't like Overleaf, it's possible to grab a local copy of the Overleaf repository using git and push your changes back to the cloud.
+If you prefer to use your favorite TeX editor, work offline, or just don't like Overleaf, it's possible to grab a local copy of the Overleaf repository using git and push your changes back to the cloud. A Makefile is included which will (re)compile each handout to its own PDF file, both with and without solutions included.
