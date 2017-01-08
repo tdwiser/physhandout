@@ -29,14 +29,14 @@
 \excludecomment{solution}
 \let\env@solution\solution
 \def\solution{\if@solution\par\medskip\hrule\par\medskip\noindent{\bf Solution.} \color{cyan}\ignorespaces\else\env@solution\fi}
-\def\endsolution{\par\medskip\hrule\par\medskip}
+\def\endsolution{\if@solution\par\medskip\hrule\par\medskip\fi}
 
 \excludecomment{antisolution}
 \let\env@antisolution\antisolution
 \def\antisolution{\if@solution\env@antisolution\fi}
 
 \newcommand*{\soln}[1]{\begingroup\renewcommand*{\annot}[1]{\PackageError{solution}{can't use \\annot inside \\soln}{Try using \\solnannot outside of \\soln instead.}}\if@solution{\leavevmode\color{cyan}#1}\else\phantom{#1}\fi\endgroup}
-\newcommand*{\solnannot}[1]{\if@solution\annot{#1}\else\relax\fi}
+\newcommand*{\solnannot}[1]{\if@solution\annot{\color{cyan}#1}\else\relax\fi}
 \newcommand{\bigsoln}[1]{\if@solution{\leavevmode\color{cyan}#1}\else\adjustbox{minipage=\textwidth,phantom}{#1}\fi}
 \newcommand{\solnx}[1]{\if@solution{\leavevmode\color{cyan}#1}\else\relax\fi}
 
