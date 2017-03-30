@@ -88,15 +88,17 @@ There are FOUR different ways to include solutions, depending on the context:
   They are completely ignored when hidden and decorated with some horizontal rules and **Solution.** at the beginning when unhidden.
   **The `\begin` and `\end` commands MUST appear at the beginning of the line with no leading whitespace and nothing else on the line.**
   (This is a quirk of the `comment` package which handles the showing/hiding of the solutions. It can lead to very very non-obvious, sometimes silent, failures, like missing part of your document in the generated PDF file.)
+  There is a corresponding `antisolution` environment for something that *only* appears in the handout, not in the solution; a common usage is `\clearpage` inside an `antisolution` for a page break that disappears in the solution, saving space.
 * `\soln{...}` is for short, inline solutions (e.g. in lecture exercises) that leave a space for the student to write the solution in.
   This works inside math environments, etc. There can be no paragraph breaks, or anything equivalent to a paragraph break (such as a `$$display-mode equation$$` or `align` environment.) LaTeX will tell you that it can't find a closing brace if you try to put in a paragraph break.
-* `\solnx{...}` is the same as `\soln` except it doesn't leave a space for the student to write in.
-* `\bigsoln{...}` allows longer inline solutions which include paragraph breaks, etc.
+* `\bigsoln{...}` allows longer solutions which include paragraph breaks, etc.
   Some space is left for writing in an answer, but it's not always as big as the solution itself. It's often better to use `\solnx` + `\workspace` (see below) for more control.
+* `\solnx{...}` is the same as `\soln` except it doesn't leave a space for the student to write in. It works for both inline and paragraph-length solutions.
 
 There is a nice way to include some space in the original document that disappears in the solution: `\workspace` (or `\workspace[<length>]`).
+Since `\solnx{<soln>}` + `\workspace[<length>]` is a common combo, there is a shorthand: `\solnx[<length>]{<soln>}`.
 
-Finally, you may want to selectively show/hide solutions in parts of a document. For this you can use `\showsolution` and `\hidesolution` which show/hide the solutions after that point, up through the end of the scope (usually the current handout).
+Finally, you may want to selectively show/hide solutions in parts of a document. For this you can use `\showsolution` and `\hidesolution` which show/hide the solutions after that point, up through the end of the current scope (usually the current handout).
 
 Working Locally with git
 ------------------------
