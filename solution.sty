@@ -38,7 +38,7 @@
 \newcommand*{\soln}[1]{\begingroup\renewcommand*{\annot}[1]{\PackageError{solution}{can't use \\annot inside \\soln}{Try using \\solnannot outside of \\soln instead.}}\if@solution{\leavevmode\color{cyan}#1}\else\phantom{#1}\fi\endgroup}
 \newcommand*{\solnannot}[1]{\if@solution\annot{\color{cyan}#1}\else\relax\fi}
 \newcommand{\bigsoln}[1]{\if@solution{\leavevmode\color{cyan}#1}\else\adjustbox{minipage=\textwidth,phantom}{#1}\fi}
-\newcommand{\solnx}[1]{\if@solution{\leavevmode\color{cyan}#1}\else\relax\fi}
+\newcommand{\solnx}[2][]{\if@solution{\leavevmode\color{cyan}#2}\else\ifthenelse{\equal{#1}{}}{\relax}{\workspace[#1]}\fi}
 
 % \if@solution
 %
