@@ -89,7 +89,8 @@
 %
 \expandafter\newif\csname if@restrict#1\endcsname% flag for restricting output to only some handouts
 \csname @restrict#1false\endcsname% by default include all handouts
-\expandafter\newcommand\csname only#1\endcsname[1]{\csname @restrict#1true\endcsname\expandafter\xdef\csname @#1list\endcsname{##1}}% \onlyhandout{h1,h2,...} to set the list of included handouts
+\expandafter\newcommand\csname only#1\endcsname[1]{\edef\resv@a{##1}\edef\resv@b{*}\ifx\resv@a\resv@b\global\csname @restrict#1false\endcsname\else\csname @restrict#1true\endcsname\expandafter\xdef\csname @#1list\endcsname{##1}\fi}% \onlyhandout{h1,h2,...} to set the list of included handouts
+% \onlyhandout{*} to re-include all
 \expandafter\newif\csname if@skip#1\endcsname% bool to store whether or not to skip this handout
 \csname @skip#1false\endcsname%
 \expandafter\let\expandafter\@tmp\csname #1\endcsname% black magic to store the original comment environment def in @handoutcomment...
