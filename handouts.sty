@@ -139,6 +139,9 @@
 \def\section{\@ifstar{\@newsectionstar}{\@oldsection}}
 \def\notocsection{\@oldsection*}
 
+\counterwithin*{section}{handout} % renumber sections on a per-handout basis
+\providecommand{\theHsection}{\thehandout.\thesection} % fix up hyperrefs to sections in multi-handout pdfs
+
 \settocfeature[toc][-1]{entryhook}{\large\bfseries}
 \settocfeature[toc][-1]{leaders}{\hfill}
 \settocfeature[toc][-1]{pagenumberhook}{\normalfont\normalsize}
